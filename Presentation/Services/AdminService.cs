@@ -19,12 +19,12 @@ namespace Presentation.Services
         public Adminstrator Authorize()
         {
           LoginCheck: 
-            ConsoleHelper.WriteWithColor("\n---- Login ----");
+            Console.WriteLine("---- Login ----");
 
-            ConsoleHelper.WriteWithColor("Username :");
+            Console.Write("Username :");
             string usernameInput = Console.ReadLine();
 
-            ConsoleHelper.WriteWithColor("Password :");
+            Console.Write("Password :");
             var passwordInput = string.Empty;
             ConsoleKey key;
             do

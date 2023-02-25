@@ -12,6 +12,7 @@ namespace Core.Constants
         Personnel,
         Groups,
         Students,
+        GroupFields,
         LogOut
     }
 }

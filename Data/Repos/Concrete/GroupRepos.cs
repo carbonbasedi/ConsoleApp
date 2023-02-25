@@ -16,6 +16,10 @@ namespace Data.Repos.Concrete
         {
             return DbContext.Groups;
         }
+        public List<Group> GetByGroupField(int id)
+        {
+            return DbContext.Groups.FindAll(x => x.GroupField.Id == id);
+        }
         public Group Get(int id)
         {
             return DbContext.Groups.FirstOrDefault(q => q.Id == id);
@@ -47,5 +51,6 @@ namespace Data.Repos.Concrete
         {
             DbContext.Groups.Remove(group);
         }
+
     }
 }

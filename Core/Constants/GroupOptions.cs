@@ -15,6 +15,7 @@ namespace Core.Constants
         GetAllGroups,
         FindGroupByName,
         FindGroupById,
-        GetGroupsByStudentCount
+        GetGroupsByStudentCount,
+        GetGroupsByGroupField
     }
 }

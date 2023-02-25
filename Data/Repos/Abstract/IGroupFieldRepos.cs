@@ -9,6 +9,6 @@ namespace Data.Repos.Abstract
 {
     internal interface IGroupFieldRepos : IRepos<GroupField>
     {
-
+        GroupField GetByName(string name);
     }
 }

@@ -15,6 +15,7 @@ namespace Presentation
         private readonly static PersonnelService _personnelService;
         private readonly static GroupService _groupService;
         private readonly static StudentService _studentService;
+        private readonly static GroupFieldService _groupFieldService;
 
         static Program()
         {
@@ -23,6 +24,7 @@ namespace Presentation
             _personnelService = new PersonnelService();
             _groupService = new GroupService();
             _studentService = new StudentService();
+            _groupFieldService = new GroupFieldService();
         }
 
         static void Main()
@@ -38,7 +40,8 @@ namespace Presentation
                 ConsoleHelper.WriteWithColor("[1] - Personnel", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[2] - Groups", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[3] - Students", ConsoleColor.Blue);
-                ConsoleHelper.WriteWithColor("[4] - Log Out", ConsoleColor.Blue);
+                ConsoleHelper.WriteWithColor("[4] - Group Fields", ConsoleColor.Blue);
+                ConsoleHelper.WriteWithColor("[5] - Log Out", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[0] - Terminate Session",ConsoleColor.Blue);
 
                 int menu;
@@ -115,8 +118,10 @@ namespace Presentation
                                     ConsoleHelper.WriteWithColor("[2] - Update Group Details", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[3] - Remove Group ", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[4] - Get All Groups", ConsoleColor.Blue);
-                                    ConsoleHelper.WriteWithColor("[5] - Find Group by Id", ConsoleColor.Blue);
-                                    ConsoleHelper.WriteWithColor("[6] - Find Group by Name", ConsoleColor.Blue);
+                                    ConsoleHelper.WriteWithColor("[5] - Find Group by Name", ConsoleColor.Blue);
+                                    ConsoleHelper.WriteWithColor("[6] - Find Group by ID", ConsoleColor.Blue);
+                                    ConsoleHelper.WriteWithColor("[7] - Get Groups by Student Count", ConsoleColor.Blue);
+                                    ConsoleHelper.WriteWithColor("[8] - Get Groups by Group Field", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[0] - Go Back to main menu", ConsoleColor.Blue);
 
 
@@ -151,6 +156,9 @@ namespace Presentation
                                                 _groupService.GetByID();
                                                 break;
                                             case (int)GroupOptions.GetGroupsByStudentCount:
+                                                break;
+                                            case (int)GroupOptions.GetGroupsByGroupField:
+                                                _groupService.GetByGroupField();
                                                 break;
                                             case (int)GroupOptions.MainMenu:
                                                 Console.Clear();
@@ -190,13 +198,16 @@ namespace Presentation
                                     switch (studentMenu)
                                     {
                                         case (int)StudentOptions.AddStudent:
-                                            _studentService.Create();
+                                            _studentService.Create(admin);
                                             break;
                                         case (int)StudentOptions.UpdateStudent:
+                                            _studentService.Update(admin);
                                             break;
                                         case (int)StudentOptions.RemoveStudent:
+                                            _studentService.Remove();
                                             break;
                                         case (int)StudentOptions.GetAllStudents:
+                                            _studentService.GetAll();
                                             break;
                                         case (int)StudentOptions.GetAllStudentsByGroup:
                                             break;
@@ -210,6 +221,52 @@ namespace Presentation
                                     }
                                 }
                             }
+                        case (int)MainOptions.GroupFields:
+                            while (true)
+                            {
+                                Console.Clear();
+                            GroupFieldMenuCheck:
+                                ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                ConsoleHelper.WriteWithColor("Group Field Menu", ConsoleColor.Yellow);
+                                ConsoleHelper.WriteWithColor("[1] - Add New Group Field", ConsoleColor.Blue);
+                                ConsoleHelper.WriteWithColor("[2] - Update Group Field details", ConsoleColor.Blue);
+                                ConsoleHelper.WriteWithColor("[3] - Remove Group Field", ConsoleColor.Blue);
+                                ConsoleHelper.WriteWithColor("[4] - Get All Group Fields", ConsoleColor.Blue);
+                                ConsoleHelper.WriteWithColor("[0] - Go Back to main menu", ConsoleColor.Blue);
+                                int groupFieldMenu;
+                                isRightInput = int.TryParse(Console.ReadLine(), out groupFieldMenu);
+                                if (!isRightInput)
+                                {
+                                    Console.Clear();
+                                    ConsoleHelper.WriteWithColor("Incorrect input format!\nPlease select from 0 to 4", ConsoleColor.Red);
+                                    goto GroupFieldMenuCheck;
+                                }
+                                else
+                                {
+                                    switch (groupFieldMenu)
+                                    {
+                                        case (int)GroupFieldOptions.AddGroupField:
+                                            _groupFieldService.Create(admin);
+                                            break;
+                                        case (int)GroupFieldOptions.UpdateGroupField:
+                                            _groupFieldService.Update(admin);
+                                            break;
+                                        case (int)GroupFieldOptions.RemoveGroupField:
+                                            _groupFieldService.Remove();
+                                            break;
+                                        case (int)GroupFieldOptions.GetAllGroupFields:
+                                            _groupFieldService.GetAll();
+                                            break;
+                                        case (int)GroupFieldOptions.MainMenu:
+                                            Console.Clear();
+                                            goto MainMenuCheck;
+                                        default:
+                                            Console.Clear();
+                                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 3", ConsoleColor.Red);
+                                            goto GroupFieldMenuCheck;
+                                    }
+                                }
+                            }                            
                         case (int)MainOptions.LogOut:
                             Console.Clear();
                             ConsoleHelper.WriteWithColor("Are you sure you want to log out of system? y/n", ConsoleColor.Red);
@@ -238,7 +295,8 @@ namespace Presentation
                             break;
                         default:
                             Console.Clear();
-                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 3", ConsoleColor.Red);
+                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 5\n Press any key to continue", ConsoleColor.Red);
+                            Console.ReadKey();
                             break;
                     }
                 }

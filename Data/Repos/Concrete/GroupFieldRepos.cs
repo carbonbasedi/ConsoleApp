@@ -21,6 +21,10 @@ namespace Data.Repos.Concrete
         {
             return DbContext.GroupFields.FirstOrDefault(q => q.Id == id);
         }
+        public GroupField GetByName(string name)
+        {
+            return DbContext.GroupFields.FirstOrDefault(q => q.Name== name);
+        }
         public void Add(GroupField groupField)
         {
             id++;
@@ -40,10 +44,6 @@ namespace Data.Repos.Concrete
                 dbGroupField.Name = groupField.Name;                
                 dbGroupField.ModifiedAt = DateTime.Now;
             }
-        }
-        public void GetByFieldId(int id)
-        {
-            DbContext.GroupFields.FirstOrDefault(q => q.Id == id);
-        }
+        }              
     }
 }

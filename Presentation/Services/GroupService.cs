@@ -24,11 +24,13 @@ namespace Presentation.Services
         }
         public void Create()
         {
-            //if(_groupFieldRepos.GetAll().Count == 0)
-            //{
-            //    Console.Clear();
-            //    ConsoleHelper.WriteWithColor("There is no Fields to assign new group to\nPlease first create Group Field", ConsoleColor.Red);
-            //}
+            if (_groupFieldRepos.GetAll().Count == 0)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("There is no Fields to assign new group to\nPlease first create Group Field\n Press any key to continue\n", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
+            }
             Console.Clear();
         NameCheck:
             ConsoleHelper.WriteWithColor("Enter group name", ConsoleColor.Blue);
@@ -118,6 +120,7 @@ namespace Presentation.Services
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("There is no groups to update\nPress any key to return to menu", ConsoleColor.Red);
                 Console.ReadKey();
+                return;
             }
             Console.Clear();
         IDCheck:
@@ -225,7 +228,9 @@ namespace Presentation.Services
             if (groupCount.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no group in database to remove! \n", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no group in database to remove! \nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }
         IDCheck:
             foreach (var group in groupCount)
@@ -267,7 +272,9 @@ namespace Presentation.Services
             if (groups.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no groups in database!", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no groups in database!\nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }           
             foreach (var group in groups)
             {
@@ -283,7 +290,9 @@ namespace Presentation.Services
             if (groupCount.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no group in database to show! \n", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no group in database to show!\nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }
         IDCheck:
             foreach (var group in groupCount)
@@ -313,7 +322,7 @@ namespace Presentation.Services
             }
             else
             {
-                ConsoleHelper.WriteWithColor($"Name : {dbGroup.Name}\nSize : {dbGroup.MaxSize}\nStart Date : {dbGroup.StartDate}\nEnd Date : {dbGroup.EndDate}\nCreated at : {dbGroup.CreatedBy}\nCreated by : {dbGroup.CreatedBy}  <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                ConsoleHelper.WriteWithColor($"Name : {dbGroup.Name}\nSize : {dbGroup.MaxSize}\nStart Date : {dbGroup.StartDate}\nEnd Date : {dbGroup.EndDate}\nCreated at : {dbGroup.CreatedBy}\nCreated by : {dbGroup.CreatedBy}\n  <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
                 Console.ReadLine();
             }
         }
@@ -324,7 +333,9 @@ namespace Presentation.Services
             if (groupCount.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no group in database to show! \n", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no group in database to show!\nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }
         NameCheck:
             foreach (var group in groupCount)
@@ -348,7 +359,49 @@ namespace Presentation.Services
             }
             else
             {
-                ConsoleHelper.WriteWithColor($"Name : {dbGroup.Name}\nSize : {dbGroup.MaxSize}\nStart Date : {dbGroup.StartDate}\nEnd Date : {dbGroup.EndDate}\nCreated at : {dbGroup.CreatedBy}\nCreated by : {dbGroup.CreatedBy}  <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                ConsoleHelper.WriteWithColor($"Name : {dbGroup.Name}\nSize : {dbGroup.MaxSize}\nStart Date : {dbGroup.StartDate}\nEnd Date : {dbGroup.EndDate}\nCreated at : {dbGroup.CreatedBy}\nCreated by : {dbGroup.CreatedBy}\nModified by : {dbGroup.ModifiedBy}\nModified at : {dbGroup.ModifiedAt}  <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                Console.ReadKey();
+            }
+        }
+        public void GetByGroupField()
+        {
+            Console.Clear();
+            var groupFields = _groupFieldRepos.GetAll();
+            if (groupFields.Count == 0)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("There is no Fields to show Groups by\nPlease first create Group Field\n Press any key to continue\n", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
+            }
+            inputCheck: Console.Clear();           
+            foreach (var groupField in groupFields)
+            {
+                ConsoleHelper.WriteWithColor($" ID : {groupField.Id}\n Name : {groupField.Name}\n", ConsoleColor.Yellow);
+            }
+            ConsoleHelper.WriteWithColor("Select Group Field to show all of Groups assinged to it or press 0 to return to menu", ConsoleColor.Yellow);
+            int num;
+            bool isRightInput = int.TryParse(Console.ReadLine(), out num);
+            if (!isRightInput)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Wrong input format!\nPlease enter ID again\n", ConsoleColor.Red);
+                goto inputCheck;
+            }
+            else if (num == 0)
+            {
+                return;
+            }
+            var dbGroup = _groupRepos.Get(num);
+            if (dbGroup is null)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("There is no group with this ID number\nPlease enter valid ID number\n", ConsoleColor.Red);
+                goto inputCheck;
+            }
+            else
+            {
+                ConsoleHelper.WriteWithColor($"Name : {dbGroup.Name}\nSize : {dbGroup.MaxSize}\nStart Date : {dbGroup.StartDate}\nEnd Date : {dbGroup.EndDate}\nCreated at : {dbGroup.CreatedBy}\nCreated by : {dbGroup.CreatedBy}\n  <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
                 Console.ReadLine();
             }
         }

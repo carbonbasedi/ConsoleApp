@@ -9,6 +9,7 @@ namespace Data.Repos.Abstract
 {
     public interface IGroupRepos : IRepos<Group>
     {
-        Group GetByName(string name);
+        Group GetByName(string name);   
+        List<Group> GetByGroupField(int id);
     }
 }

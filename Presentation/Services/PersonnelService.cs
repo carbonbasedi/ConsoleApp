@@ -13,12 +13,12 @@ namespace Presentation.Services
 {
     internal class PersonnelService
     {
-        private readonly PersonnelRepos _personnelRepos;
+        private readonly PersonnelRepos _personnelRepos;      
         public PersonnelService()
         {
-            _personnelRepos = new PersonnelRepos();
+            _personnelRepos = new PersonnelRepos();  
         }
-        public void Create()
+        public void Create(Adminstrator adminstrator)
         {
             Console.Clear();
             ConsoleHelper.WriteWithColor("Enter teacher name", ConsoleColor.Blue);
@@ -41,10 +41,10 @@ namespace Presentation.Services
             }
             Console.Clear();
             DateTime boundary = new DateTime(1950, 1, 1);
-            if (dob < boundary)
+            if (dob < boundary && dob > DateTime.Now)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("Date of birth cannot be set higher than year 1950 !\nPlease enter valid date\n", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Date of birth cannot be set befor year 1950 or after current date !\nPlease enter valid date\n", ConsoleColor.Red);
                 goto dobCheck;
             }
 
@@ -58,6 +58,7 @@ namespace Presentation.Services
                 Surname = surname,
                 DOB = dob,
                 Specialty = spec,
+                CreatedBy = adminstrator.Username
             };
 
             Console.Clear();
@@ -65,7 +66,7 @@ namespace Presentation.Services
             ConsoleHelper.WriteWithColor($"Personnel profile created successfully!\n Name : {personnel.Name}\n Surname : {personnel.Surname}\n Date of birth : {personnel.DOB.ToShortDateString()}\n Specialty : {personnel.Specialty}\n\n\n <<< PRESS ANY KEY TO CONTINUE >>>", ConsoleColor.Green);
             Console.ReadKey();
         }
-        public void Update()
+        public void Update(Adminstrator adminstrator)
         {
             Console.Clear();
             var personnelprof = _personnelRepos.GetAll();
@@ -124,21 +125,22 @@ namespace Presentation.Services
                 }
                 Console.Clear();
                 DateTime boundary = new DateTime(1950, 1, 1);
-                if (dob < boundary)
+                if (dob < boundary && dob > DateTime.Now)
                 {
                     Console.Clear();
-                    ConsoleHelper.WriteWithColor("Date of birth cannot be set higher than year 1950 !\nPlease enter valid date\n", ConsoleColor.Red);
+                    ConsoleHelper.WriteWithColor("Date of birth cannot be set before year 1950 or after current date !\nPlease enter valid date\n", ConsoleColor.Red);
                     goto dobCheck;
                 }
 
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("Enter Specialty", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Enter Specialty", ConsoleColor.Blue);
                 string spec = Console.ReadLine();
 
                 personnel.Name = name;
                 personnel.Surname = surname;
                 personnel.DOB = dob;
                 personnel.Specialty = spec;
+                personnel.ModifiedBy = adminstrator.Username;
 
                 _personnelRepos.Update(personnel);
                 Console.Clear();
@@ -192,16 +194,27 @@ namespace Presentation.Services
         public void GetAll()
         {
             var personnels = _personnelRepos.GetAll();
-            if (personnels is null)
+            if (personnels.Count == 0)
             {
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("There is no personnel profiles in database", ConsoleColor.Red);
+                return;
             }        
             Console.Clear();
             foreach (var personnel in personnels)
             {
-                ConsoleHelper.WriteWithColor($" ID : {personnel.Id}\n Name : {personnel.Name}\n Surname: {personnel.Surname}\n Date of birth : {personnel.DOB.ToShortDateString()}\n Speciality : {personnel.Specialty}\n\nPress any key to return to menu", ConsoleColor.Yellow);
+                ConsoleHelper.WriteWithColor($" ID : {personnel.Id}\n Name : {personnel.Name}\n Surname: {personnel.Surname}\n Date of birth : {personnel.DOB.ToShortDateString()}\n Speciality : {personnel.Specialty}\n", ConsoleColor.Yellow);
+
+                if(personnel.Groups.Count == 0)
+                {                
+                    ConsoleHelper.WriteWithColor("No groups assigned to this Personnel member\n",ConsoleColor.Red);
+                }
+                foreach(var group in personnel.Groups)
+                {
+                    ConsoleHelper.WriteWithColor($"Group Id : {group.Id}\n Name : {group.Name}",ConsoleColor.Green);
+                }
             }
+            ConsoleHelper.WriteWithColor("Press any key to return to menu\n",ConsoleColor.Green);
             Console.ReadKey();
         }        
     }

@@ -35,7 +35,7 @@ namespace Presentation
             {
                 Console.Clear();
             MainMenuCheck:
-                ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n",ConsoleColor.DarkGray);
+                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n",ConsoleColor.DarkGray);
                 ConsoleHelper.WriteWithColor("Main Menu", ConsoleColor.Yellow);
                 ConsoleHelper.WriteWithColor("[1] - Personnel", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[2] - Groups", ConsoleColor.Blue);
@@ -62,7 +62,7 @@ namespace Presentation
                                 {
                                     Console.Clear();
                                 PerMenuCheck:                                   
-                                    ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n",ConsoleColor.DarkGray);
+                                    ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n",ConsoleColor.DarkGray);
                                     ConsoleHelper.WriteWithColor("Personnel Menu", ConsoleColor.Yellow);
                                     ConsoleHelper.WriteWithColor("[1] - Add New Personnel", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[2] - Update Personnel Profile", ConsoleColor.Blue);
@@ -83,10 +83,10 @@ namespace Presentation
                                         switch (perMenu)
                                         {
                                             case (int)PersonnelOptions.AddPersonnel:
-                                                _personnelService.Create();
+                                                _personnelService.Create(admin);
                                                 break;
                                             case (int)PersonnelOptions.UpdatePersonnel:
-                                                _personnelService.Update(); 
+                                                _personnelService.Update(admin); 
                                                 break;
                                             case (int)PersonnelOptions.RemovePersonnel:
                                                 _personnelService.Remove();
@@ -112,7 +112,7 @@ namespace Presentation
                                 {
                                     Console.Clear();
                                 GroupMenuCheck:
-                                    ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                    ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
                                     ConsoleHelper.WriteWithColor("Group Menu", ConsoleColor.Yellow);
                                     ConsoleHelper.WriteWithColor("[1] - Add New Group", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[2] - Update Group Details", ConsoleColor.Blue);
@@ -122,6 +122,7 @@ namespace Presentation
                                     ConsoleHelper.WriteWithColor("[6] - Find Group by ID", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[7] - Get Groups by Student Count", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[8] - Get Groups by Group Field", ConsoleColor.Blue);
+                                    ConsoleHelper.WriteWithColor("[9] - Get Groups by Teacher", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[0] - Go Back to main menu", ConsoleColor.Blue);
 
 
@@ -138,10 +139,10 @@ namespace Presentation
                                         switch (groupMenu)
                                         {
                                             case (int)GroupOptions.AddGroup:
-                                                _groupService.Create();
+                                                _groupService.Create(admin);
                                                 break;
                                             case (int)GroupOptions.UpdateGroup:
-                                                _groupService.Update();
+                                                _groupService.Update(admin);
                                                 break;
                                             case (int)GroupOptions.RemoveGroup:
                                                 _groupService.Remove();
@@ -160,6 +161,9 @@ namespace Presentation
                                             case (int)GroupOptions.GetGroupsByGroupField:
                                                 _groupService.GetByGroupField();
                                                 break;
+                                            case (int)GroupOptions.GetGroupsByTeacher:
+                                                _groupService.GetGroupsByTeacher();
+                                                break;
                                             case (int)GroupOptions.MainMenu:
                                                 Console.Clear();
                                                 goto MainMenuCheck;
@@ -176,7 +180,7 @@ namespace Presentation
                             {
                                 Console.Clear();
                             StudentMenuCheck:
-                                ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
                                 ConsoleHelper.WriteWithColor("Student Menu", ConsoleColor.Yellow);
                                 ConsoleHelper.WriteWithColor("[1] - Add New Student", ConsoleColor.Blue);
                                 ConsoleHelper.WriteWithColor("[2] - Update Student details", ConsoleColor.Blue);
@@ -210,6 +214,7 @@ namespace Presentation
                                             _studentService.GetAll();
                                             break;
                                         case (int)StudentOptions.GetAllStudentsByGroup:
+                                            _studentService.GetAllByGroup();
                                             break;
                                         case (int)GroupOptions.MainMenu:
                                             Console.Clear();
@@ -226,7 +231,7 @@ namespace Presentation
                             {
                                 Console.Clear();
                             GroupFieldMenuCheck:
-                                ConsoleHelper.WriteWithColor($"Logged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
                                 ConsoleHelper.WriteWithColor("Group Field Menu", ConsoleColor.Yellow);
                                 ConsoleHelper.WriteWithColor("[1] - Add New Group Field", ConsoleColor.Blue);
                                 ConsoleHelper.WriteWithColor("[2] - Update Group Field details", ConsoleColor.Blue);

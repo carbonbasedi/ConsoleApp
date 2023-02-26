@@ -19,7 +19,7 @@ namespace Presentation.Services
         public Adminstrator Authorize()
         {
           LoginCheck: 
-            Console.WriteLine("---- Login ----");
+            Console.WriteLine("\n---- Login ----");
 
             Console.Write("Username :");
             string usernameInput = Console.ReadLine();

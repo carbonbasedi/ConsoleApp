@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Data.Repos.Abstract
 {
     public interface IPersonnelRepos : IRepos<Personnel>
-    {
-
+    {   
+        
     }
 }

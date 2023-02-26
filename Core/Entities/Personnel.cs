@@ -8,6 +8,10 @@ namespace Core.Entities
 {
     public class Personnel : BaseEntity
     {
+        public Personnel()
+        {
+            Groups = new List<Group>();
+        }
         public string Name { get; set; }
         public string Surname { get; set; }
         public DateTime DOB { get; set; }

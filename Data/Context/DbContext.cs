@@ -13,14 +13,14 @@ namespace Data.Context
         {
             Admins= new List<Adminstrator>();
             Personnels = new List<Personnel>();
+            GroupFields = new List<GroupField>();
             Groups = new List<Group>();
             Students = new List<Student>();
-            GroupFields = new List<GroupField>();
         }
         public static List<Adminstrator> Admins { get; set; }
         public static List<Personnel> Personnels { get; set; }
+        public static List<GroupField> GroupFields { get; set; }
         public static List<Group> Groups { get; set; }
         public static List<Student> Students { get; set; }
-        public static List<GroupField> GroupFields { get; set; }
     }
 }

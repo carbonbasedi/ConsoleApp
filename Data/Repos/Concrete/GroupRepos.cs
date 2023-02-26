@@ -16,9 +16,9 @@ namespace Data.Repos.Concrete
         {
             return DbContext.Groups;
         }
-        public List<Group> GetByGroupField(int id)
+        public List<Group> GetAllByGroupField(int id)
         {
-            return DbContext.Groups.FindAll(x => x.GroupField.Id == id);
+            return DbContext.Groups.FindAll(q => q.Id == id);
         }
         public Group Get(int id)
         {

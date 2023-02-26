@@ -20,10 +20,10 @@ namespace Data.Repos.Concrete
         public GroupField Get(int id)
         {
             return DbContext.GroupFields.FirstOrDefault(q => q.Id == id);
-        }
-        public GroupField GetByName(string name)
+        }    
+        public GroupField GetByName(string name) 
         {
-            return DbContext.GroupFields.FirstOrDefault(q => q.Name== name);
+            return DbContext.GroupFields.FirstOrDefault(q => q.Name == name);
         }
         public void Add(GroupField groupField)
         {
@@ -31,10 +31,6 @@ namespace Data.Repos.Concrete
             groupField.Id = id;
             groupField.CreatedAt = DateTime.Now;
             DbContext.GroupFields.Add(groupField);
-        }
-        public void Delete(GroupField groupField)
-        {
-            DbContext.GroupFields.Remove(groupField);
         }
         public void Update(GroupField groupField)
         {
@@ -45,5 +41,9 @@ namespace Data.Repos.Concrete
                 dbGroupField.ModifiedAt = DateTime.Now;
             }
         }              
+        public void Delete(GroupField groupField)
+        {
+            DbContext.GroupFields.Remove(groupField);
+        }
     }
 }

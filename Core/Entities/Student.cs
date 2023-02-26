@@ -12,7 +12,7 @@ namespace Core.Entities
         public string Surname { get; set; }
         public DateTime DOB { get; set; }
         public string Email { get; set; }
-        public Group group { get; set; }
-        public string groupId { get; set; }
+        public Group Group { get; set; }
+        public int GroupId { get; set; }
     }
 }

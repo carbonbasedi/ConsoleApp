@@ -3,7 +3,7 @@ using Data.Context;
 using Data.Repos.Abstract;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq;  
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +15,7 @@ namespace Data.Repos.Concrete
         public List<Personnel> GetAll()
         {
             return DbContext.Personnels;
-        }
+        }        
         public Personnel Get(int id)
         {
             return DbContext.Personnels.FirstOrDefault(q => q.Id == id);

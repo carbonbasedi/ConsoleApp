@@ -16,10 +16,12 @@ namespace Presentation.Services
     {
         private readonly StudentRepos _studentRepos;
         private readonly GroupRepos _groupRepos;
+        private readonly GroupService _groupService;
         public StudentService()
         {
             _studentRepos = new StudentRepos();
             _groupRepos = new GroupRepos();
+            _groupService = new GroupService();
         }
         public void Create(Adminstrator adminstrator)
         {
@@ -58,23 +60,45 @@ namespace Presentation.Services
             }
 
             Console.Clear();
+            EmailCheck:
             ConsoleHelper.WriteWithColor("Enter student's email adress", ConsoleColor.Blue);
             string email = Console.ReadLine();
             if (email.IsEmail() == false)
             {
-                ConsoleHelper.WriteWithColor("Wrong email input format!", ConsoleColor.Red);
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Wrong email input format!\n", ConsoleColor.Red);
+                goto EmailCheck;
+            }
+            if (email.Length == 0)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Enter email adress please.", ConsoleColor.Red);
             }
 
-            Console.Clear();
+        groupIdCheck: Console.Clear();
             var groups = _groupRepos.GetAll();
             foreach (var group in groups)
             {
                 ConsoleHelper.WriteWithColor($" ID : {group.Id}\n Name : {group.Name}\n Group Size : {group.MaxSize}\n Start Date : {group.StartDate.ToShortDateString()}\n End Date : {group.EndDate.ToShortDateString()}", ConsoleColor.Yellow);
             }
-            string groupId;
 
+            ConsoleHelper.WriteWithColor("Enter student's group id", ConsoleColor.Blue);
+            int groupId;
+            isRightInput = int.TryParse(Console.ReadLine(), out groupId);
+            if (!isRightInput)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Wrong id input!\nChoose id from list");
+                goto groupIdCheck;
+            }
 
-            ConsoleHelper.WriteWithColor("Enter student's email adress", ConsoleColor.Blue);
+            var dbGroup = _groupRepos.Get(groupId);
+            if (dbGroup.MaxSize <= dbGroup.Students.Count)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("This group is full\nChoose different group",ConsoleColor.Red);  
+                goto groupIdCheck;
+            }
 
             var student = new Student
             {
@@ -82,9 +106,12 @@ namespace Presentation.Services
                 Surname = surname,
                 DOB = dob,
                 Email = email,
+                Group = dbGroup,
+                GroupId = groupId,
                 CreatedBy = adminstrator.Username
-
             };
+
+            dbGroup.Students.Add(student);          
 
             Console.Clear();
             _studentRepos.Add(student);
@@ -230,38 +257,63 @@ namespace Presentation.Services
                 Console.ReadKey();
                 return;
             }
-        IDCheck:
+            
+            Console.Clear();
             foreach (var student in students)
             {
-                ConsoleHelper.WriteWithColor($" ID : {student.Id}\n Name : {student.Name}\n Surname: {student.Surname}\n Date of birth : {student.DOB.ToShortDateString()}\n Email : {student.Email}\n Created by : {student.CreatedBy}\n Created at : {student.CreatedAt}\n Modified by : {student.ModifiedBy}\n Modified at :{student.ModifiedAt}", ConsoleColor.Yellow);
+                ConsoleHelper.WriteWithColor($" ID : {student.Id}\n Name : {student.Name}\n Surname: {student.Surname}\n Date of birth : {student.DOB.ToShortDateString()}\n Email : {student.Email}\n Student Group Id : {student.GroupId}\n Student Group : {student.Group.Name}\n Created by : {student.CreatedBy}\n Created at : {student.CreatedAt}\n Modified by : {student.ModifiedBy}\n Modified at :{student.ModifiedAt}\n", ConsoleColor.Yellow);
             }
-
-            ConsoleHelper.WriteWithColor("Enter student ID that you want to remove or press 0 to go back to Menu", ConsoleColor.Blue);
-            int id;
-            bool isRightInput = int.TryParse(Console.ReadLine(), out id);
-            if (!isRightInput)
+            ConsoleHelper.WriteWithColor("Press any key to continue", ConsoleColor.Green);
+            Console.ReadKey();
+        }
+        public void GetAllByGroup()
+        {
+            var students = _studentRepos.GetAll();
+            if (students.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("Wrong input format!\nPlease enter ID again\n", ConsoleColor.Red);
-                goto IDCheck;
-            }
-            else if (id == 0)
-            {
+                ConsoleHelper.WriteWithColor("There is no student profiles in database\nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
                 return;
             }
-            var dbStudent = _studentRepos.Get(id);
-            if (dbStudent is null)
+
+            var groups = _groupRepos.GetAll();
+            if (groups.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no student profile with this ID number\nPlease enter valid ID number\n", ConsoleColor.Red);
-                goto IDCheck;
+                ConsoleHelper.WriteWithColor("There is no groups in database!\nPress any key to return to menu", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }
-            else
+            IdCheck:
+            foreach (var group in groups)
             {
-                _studentRepos.Delete(dbStudent);
-                ConsoleHelper.WriteWithColor($"{dbStudent.Name} student profile successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
-                Console.ReadLine();
+                ConsoleHelper.WriteWithColor($" ID : {group.Id}\n Name : {group.Name}\n Group Size : {group.MaxSize}\n Start Date : {group.StartDate.ToShortDateString()}\n End Date : {group.EndDate.ToShortDateString()}", ConsoleColor.Yellow);
             }
+            int id;
+            bool isRightInput = int.TryParse(Console.ReadLine(), out id);
+            if(!isRightInput) 
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Wrong group id input\n Please selec from list");
+                goto IdCheck;
+            }
+
+            var dbGroup = _groupRepos.Get(id);
+            if (dbGroup == null)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("There is no group with this id\n Please choose from the list\nPress any key to continue", ConsoleColor.Red);
+                Console.ReadKey();
+            }
+            Console.Clear();
+            foreach (var student in dbGroup.Students)
+            {
+                ConsoleHelper.WriteWithColor($"Id : {student.Id}\nName : {student.Name}\nSurname : {student.Surname}\n", ConsoleColor.Green);
+            }
+            ConsoleHelper.WriteWithColor("Press any key to continue", ConsoleColor.Green);
+            Console.ReadKey();
+
         }
     }
 }

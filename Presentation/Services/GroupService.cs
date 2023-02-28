@@ -549,6 +549,7 @@ namespace Presentation.Services
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("There is no Groups to show in database\n Press any key to continue", ConsoleColor.Red);
                 Console.ReadKey();
+                return;
             }
         personnelIdCheck:
             foreach (var personnel in personnels)

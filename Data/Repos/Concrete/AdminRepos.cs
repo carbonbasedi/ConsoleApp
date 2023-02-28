@@ -14,7 +14,7 @@ namespace Data.Repos.Concrete
     {
         public Adminstrator GetByUsernameAndPassword(string username, string password)
         {
-          return DbContext.Admins.FirstOrDefault(a => a.Username.ToLower() == username.ToLower() && PasswordHasher.Decrypt(a.Password) == password);
+            return DbContext.Admins.FirstOrDefault(a => a.Username.ToLower() == username.ToLower() && PasswordHasher.Decrypt(a.Password) == password);
         }
     }
 }

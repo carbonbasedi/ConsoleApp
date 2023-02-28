@@ -13,16 +13,22 @@ namespace Presentation.Services
 {
     internal class PersonnelService
     {
-        private readonly PersonnelRepos _personnelRepos;      
+        private readonly PersonnelRepos _personnelRepos;
         public PersonnelService()
         {
-            _personnelRepos = new PersonnelRepos();  
+            _personnelRepos = new PersonnelRepos();
         }
         public void Create(Adminstrator adminstrator)
         {
+        NameCheck:
             Console.Clear();
             ConsoleHelper.WriteWithColor("Enter teacher name", ConsoleColor.Blue);
             string name = Console.ReadLine();
+            if (String.IsNullOrEmpty(name) == true)
+            {
+                ConsoleHelper.WriteWithColor("Please enter personnel name", ConsoleColor.Yellow);
+                goto NameCheck;
+            }
 
             Console.Clear();
             ConsoleHelper.WriteWithColor("Enter teacher surname", ConsoleColor.Blue);
@@ -75,6 +81,7 @@ namespace Presentation.Services
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("There is no personnel profiles to update\nPress any key to return to menu", ConsoleColor.Red);
                 Console.ReadKey();
+                return;
             }
             Console.Clear();
         IDCheck:
@@ -156,7 +163,9 @@ namespace Presentation.Services
             if (personnelCount.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no personnel profile in database to remove! \n", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no personnel profile in database to remove! \n press any key to continue ", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
             }
         IDCheck:
             foreach (var personnel in personnelCount)
@@ -186,9 +195,27 @@ namespace Presentation.Services
             }
             else
             {
-                _personnelRepos.Delete(dbPersonnel);
-                ConsoleHelper.WriteWithColor($" {dbPersonnel.Name} personnel profile successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
-                Console.ReadLine();
+            yesNoCheck:
+                ConsoleHelper.WriteWithColor("Are you sure you want to remove this account y/n", ConsoleColor.Red);
+                ConsoleKeyInfo cki2 = Console.ReadKey();
+                if (cki2.Key == ConsoleKey.Y)
+                {
+                    Console.Clear();
+                    _personnelRepos.Delete(dbPersonnel);
+                    ConsoleHelper.WriteWithColor($"\n{dbPersonnel.Name} {dbPersonnel.Surname} personnel profile successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                    Console.ReadLine();
+                }
+                else if (cki2.Key == ConsoleKey.N)
+                {
+                    Console.Clear();
+                    goto IDCheck;
+                }
+                else
+                {
+                    Console.Clear();
+                    ConsoleHelper.WriteWithColor("Please select y/n", ConsoleColor.Red);
+                    goto yesNoCheck;
+                }
             }
         }
         public void GetAll()
@@ -197,25 +224,26 @@ namespace Presentation.Services
             if (personnels.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no personnel profiles in database", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no personnel profiles in database\n press any key to continue", ConsoleColor.Red);
+                Console.ReadKey();
                 return;
-            }        
+            }
             Console.Clear();
             foreach (var personnel in personnels)
             {
                 ConsoleHelper.WriteWithColor($" ID : {personnel.Id}\n Name : {personnel.Name}\n Surname: {personnel.Surname}\n Date of birth : {personnel.DOB.ToShortDateString()}\n Speciality : {personnel.Specialty}\n", ConsoleColor.Yellow);
 
-                if(personnel.Groups.Count == 0)
-                {                
-                    ConsoleHelper.WriteWithColor("No groups assigned to this Personnel member\n",ConsoleColor.Red);
-                }
-                foreach(var group in personnel.Groups)
+                if (personnel.Groups.Count == 0)
                 {
-                    ConsoleHelper.WriteWithColor($"Group Id : {group.Id}\n Name : {group.Name}",ConsoleColor.Green);
+                    ConsoleHelper.WriteWithColor("No groups assigned to this Personnel member\n", ConsoleColor.Red);
+                }
+                foreach (var group in personnel.Groups)
+                {
+                    ConsoleHelper.WriteWithColor($"Group Id : {group.Id}\n Name : {group.Name}", ConsoleColor.Green);
                 }
             }
-            ConsoleHelper.WriteWithColor("Press any key to return to menu\n",ConsoleColor.Green);
+            ConsoleHelper.WriteWithColor("Press any key to return to menu\n", ConsoleColor.Green);
             Console.ReadKey();
-        }        
+        }
     }
 }

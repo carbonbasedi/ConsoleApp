@@ -20,8 +20,8 @@ namespace Data.Repos.Concrete
         public GroupField Get(int id)
         {
             return DbContext.GroupFields.FirstOrDefault(q => q.Id == id);
-        }    
-        public GroupField GetByName(string name) 
+        }
+        public GroupField GetByName(string name)
         {
             return DbContext.GroupFields.FirstOrDefault(q => q.Name == name);
         }
@@ -37,10 +37,10 @@ namespace Data.Repos.Concrete
             var dbGroupField = DbContext.GroupFields.FirstOrDefault(d => d.Id == groupField.Id);
             if (dbGroupField != null)
             {
-                dbGroupField.Name = groupField.Name;                
+                dbGroupField.Name = groupField.Name;
                 dbGroupField.ModifiedAt = DateTime.Now;
             }
-        }              
+        }
         public void Delete(GroupField groupField)
         {
             DbContext.GroupFields.Remove(groupField);

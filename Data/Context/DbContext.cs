@@ -11,7 +11,7 @@ namespace Data.Context
     {
         static DbContext()
         {
-            Admins= new List<Adminstrator>();
+            Admins = new List<Adminstrator>();
             Personnels = new List<Personnel>();
             GroupFields = new List<GroupField>();
             Groups = new List<Group>();

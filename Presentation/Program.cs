@@ -16,7 +16,6 @@ namespace Presentation
         private readonly static GroupService _groupService;
         private readonly static StudentService _studentService;
         private readonly static GroupFieldService _groupFieldService;
-
         static Program()
         {
             DbInitialiizer.SeedAdmins();
@@ -26,7 +25,6 @@ namespace Presentation
             _studentService = new StudentService();
             _groupFieldService = new GroupFieldService();
         }
-
         static void Main()
         {
         Authorization:
@@ -35,21 +33,22 @@ namespace Presentation
             {
                 Console.Clear();
             MainMenuCheck:
-                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n",ConsoleColor.DarkGray);
+                ConsoleHelper.WriteWithColor($"\nLogged in as [ {admin.Username} ]\n", ConsoleColor.DarkGray);
+                ConsoleHelper.WriteWithColor("░█▀▀░█▀█░█░░░█░░░█▀▀░█▀▀░█▀▀░░░█▀▄░█▀▀░█▀▀░▀█▀░█▀▀░▀█▀░█▀▄░█░█\r\n░█░░░█░█░█░░░█░░░█▀▀░█░█░█▀▀░░░█▀▄░█▀▀░█░█░░█░░▀▀█░░█░░█▀▄░░█░\r\n░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀░▀░░▀░\n", ConsoleColor.Yellow);
                 ConsoleHelper.WriteWithColor("Main Menu", ConsoleColor.Yellow);
                 ConsoleHelper.WriteWithColor("[1] - Personnel", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[2] - Groups", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[3] - Students", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[4] - Group Fields", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[5] - Log Out", ConsoleColor.Blue);
-                ConsoleHelper.WriteWithColor("[0] - Terminate Session",ConsoleColor.Blue);
+                ConsoleHelper.WriteWithColor("[0] - Terminate Session", ConsoleColor.Blue);
 
                 int menu;
                 bool isRightInput = int.TryParse(Console.ReadLine(), out menu);
                 if (!isRightInput)
                 {
                     Console.Clear();
-                    ConsoleHelper.WriteWithColor("Incorrect input format!\n Please select from 0 to 4", ConsoleColor.Red);
+                    ConsoleHelper.WriteWithColor("Incorrect input format!\nPlease select from 0 to 5", ConsoleColor.Red);
                     goto MainMenuCheck;
                 }
                 else
@@ -61,8 +60,8 @@ namespace Presentation
                                 while (true)
                                 {
                                     Console.Clear();
-                                PerMenuCheck:                                   
-                                    ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n",ConsoleColor.DarkGray);
+                                PersonnelMenuCheck:
+                                    ConsoleHelper.WriteWithColor($"\nLogged in as [ {admin.Username} ]\n", ConsoleColor.DarkGray);
                                     ConsoleHelper.WriteWithColor("Personnel Menu", ConsoleColor.Yellow);
                                     ConsoleHelper.WriteWithColor("[1] - Add New Personnel", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[2] - Update Personnel Profile", ConsoleColor.Blue);
@@ -70,23 +69,23 @@ namespace Presentation
                                     ConsoleHelper.WriteWithColor("[4] - Get All Personnel Profiles", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[0] - Go Back to main menu", ConsoleColor.Blue);
 
-                                    int perMenu;
-                                    isRightInput = int.TryParse(Console.ReadLine(), out perMenu);
+                                    int personnelMenu;
+                                    isRightInput = int.TryParse(Console.ReadLine(), out personnelMenu);
                                     if (!isRightInput)
                                     {
                                         Console.Clear();
                                         ConsoleHelper.WriteWithColor("Incorrect input format!\nPlease select from 0 to 4", ConsoleColor.Red);
-                                        goto PerMenuCheck;
+                                        goto PersonnelMenuCheck;
                                     }
                                     else
                                     {
-                                        switch (perMenu)
+                                        switch (personnelMenu)
                                         {
                                             case (int)PersonnelOptions.AddPersonnel:
                                                 _personnelService.Create(admin);
                                                 break;
                                             case (int)PersonnelOptions.UpdatePersonnel:
-                                                _personnelService.Update(admin); 
+                                                _personnelService.Update(admin);
                                                 break;
                                             case (int)PersonnelOptions.RemovePersonnel:
                                                 _personnelService.Remove();
@@ -100,8 +99,7 @@ namespace Presentation
                                             default:
                                                 Console.Clear();
                                                 ConsoleHelper.WriteWithColor("Please select valid option from 0 to 4", ConsoleColor.Red);
-                                                goto PerMenuCheck;
-
+                                                goto PersonnelMenuCheck;
                                         }
                                     }
                                 }
@@ -112,7 +110,7 @@ namespace Presentation
                                 {
                                     Console.Clear();
                                 GroupMenuCheck:
-                                    ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                    ConsoleHelper.WriteWithColor($"\nLogged in as [ {admin.Username} ]\n", ConsoleColor.DarkGray);
                                     ConsoleHelper.WriteWithColor("Group Menu", ConsoleColor.Yellow);
                                     ConsoleHelper.WriteWithColor("[1] - Add New Group", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[2] - Update Group Details", ConsoleColor.Blue);
@@ -125,13 +123,12 @@ namespace Presentation
                                     ConsoleHelper.WriteWithColor("[9] - Get Groups by Teacher", ConsoleColor.Blue);
                                     ConsoleHelper.WriteWithColor("[0] - Go Back to main menu", ConsoleColor.Blue);
 
-
                                     int groupMenu;
                                     isRightInput = int.TryParse(Console.ReadLine(), out groupMenu);
                                     if (!isRightInput)
                                     {
                                         Console.Clear();
-                                        ConsoleHelper.WriteWithColor("Incorrect input format!\n Please select from 0 to 6", ConsoleColor.Red);
+                                        ConsoleHelper.WriteWithColor("Incorrect input format!\n Please select from 0 to 9", ConsoleColor.Red);
                                         goto GroupMenuCheck;
                                     }
                                     else
@@ -157,6 +154,7 @@ namespace Presentation
                                                 _groupService.GetByID();
                                                 break;
                                             case (int)GroupOptions.GetGroupsByStudentCount:
+                                                _groupService.GetByStudentCount();
                                                 break;
                                             case (int)GroupOptions.GetGroupsByGroupField:
                                                 _groupService.GetByGroupField();
@@ -169,7 +167,7 @@ namespace Presentation
                                                 goto MainMenuCheck;
                                             default:
                                                 Console.Clear();
-                                                ConsoleHelper.WriteWithColor("Please select valid option from 0 to 3", ConsoleColor.Red);
+                                                ConsoleHelper.WriteWithColor("Please select valid option from 0 to 9", ConsoleColor.Red);
                                                 goto GroupMenuCheck;
                                         }
                                     }
@@ -180,7 +178,7 @@ namespace Presentation
                             {
                                 Console.Clear();
                             StudentMenuCheck:
-                                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                ConsoleHelper.WriteWithColor($"\nLogged in as [ {admin.Username} ]\n", ConsoleColor.DarkGray);
                                 ConsoleHelper.WriteWithColor("Student Menu", ConsoleColor.Yellow);
                                 ConsoleHelper.WriteWithColor("[1] - Add New Student", ConsoleColor.Blue);
                                 ConsoleHelper.WriteWithColor("[2] - Update Student details", ConsoleColor.Blue);
@@ -216,12 +214,12 @@ namespace Presentation
                                         case (int)StudentOptions.GetAllStudentsByGroup:
                                             _studentService.GetAllByGroup();
                                             break;
-                                        case (int)GroupOptions.MainMenu:
+                                        case (int)StudentOptions.MainMenu:
                                             Console.Clear();
                                             goto MainMenuCheck;
                                         default:
                                             Console.Clear();
-                                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 3", ConsoleColor.Red);
+                                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 5", ConsoleColor.Red);
                                             goto StudentMenuCheck;
                                     }
                                 }
@@ -231,7 +229,7 @@ namespace Presentation
                             {
                                 Console.Clear();
                             GroupFieldMenuCheck:
-                                ConsoleHelper.WriteWithColor($"\nLogged in as :{admin.Username}\n", ConsoleColor.DarkGray);
+                                ConsoleHelper.WriteWithColor($"\nLogged in as [ {admin.Username} ]\n", ConsoleColor.DarkGray);
                                 ConsoleHelper.WriteWithColor("Group Field Menu", ConsoleColor.Yellow);
                                 ConsoleHelper.WriteWithColor("[1] - Add New Group Field", ConsoleColor.Blue);
                                 ConsoleHelper.WriteWithColor("[2] - Update Group Field details", ConsoleColor.Blue);
@@ -267,13 +265,14 @@ namespace Presentation
                                             goto MainMenuCheck;
                                         default:
                                             Console.Clear();
-                                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 3", ConsoleColor.Red);
+                                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 4", ConsoleColor.Red);
                                             goto GroupFieldMenuCheck;
                                     }
                                 }
-                            }                            
+                            }
                         case (int)MainOptions.LogOut:
                             Console.Clear();
+                        LogOutCheck:
                             ConsoleHelper.WriteWithColor("Are you sure you want to log out of system? y/n", ConsoleColor.Red);
                             ConsoleKeyInfo cki = Console.ReadKey();
                             if (cki.Key == ConsoleKey.Y)
@@ -282,11 +281,18 @@ namespace Presentation
                             }
                             else if (cki.Key == ConsoleKey.N)
                             {
+                                Console.Clear();
                                 goto MainMenuCheck;
                             }
-                            break;
+                            else
+                            {
+                                Console.Clear();
+                                ConsoleHelper.WriteWithColor("Please select y/n", ConsoleColor.Red);
+                                goto LogOutCheck;
+                            }
                         case (int)MainOptions.Exit:
                             Console.Clear();
+                        ExitCheck:
                             ConsoleHelper.WriteWithColor("Are you sure you want to terminate current session? y/n", ConsoleColor.Red);
                             ConsoleKeyInfo cki2 = Console.ReadKey();
                             if (cki2.Key == ConsoleKey.Y)
@@ -295,14 +301,19 @@ namespace Presentation
                             }
                             else if (cki2.Key == ConsoleKey.N)
                             {
+                                Console.Clear();
                                 break;
                             }
-                            break;
+                            else
+                            {
+                                Console.Clear();
+                                ConsoleHelper.WriteWithColor("Please select y/n", ConsoleColor.Red);
+                                goto ExitCheck;
+                            }
                         default:
                             Console.Clear();
-                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 5\n Press any key to continue", ConsoleColor.Red);
-                            Console.ReadKey();
-                            break;
+                            ConsoleHelper.WriteWithColor("Please select valid option from 0 to 5", ConsoleColor.Red);
+                            goto MainMenuCheck;
                     }
                 }
             }

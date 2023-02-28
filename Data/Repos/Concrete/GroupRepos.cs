@@ -18,7 +18,11 @@ namespace Data.Repos.Concrete
         }
         public List<Group> GetAllByGroupField(int id)
         {
-            return DbContext.Groups.FindAll(q => q.Id == id);
+            return DbContext.Groups.FindAll(f => f.Id == id);
+        }
+        public List<Group> GetGroupsByStudentCount(int studentCount)
+        {
+            return DbContext.Groups.Where(g => g.Students.Count >= studentCount).ToList();
         }
         public Group Get(int id)
         {
@@ -51,6 +55,5 @@ namespace Data.Repos.Concrete
         {
             DbContext.Groups.Remove(group);
         }
-
     }
 }

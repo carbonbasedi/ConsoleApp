@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Presentation.Services
 {
@@ -60,8 +61,8 @@ namespace Presentation.Services
             }
 
             Console.Clear();
-            EmailCheck:
-            ConsoleHelper.WriteWithColor("Enter student's email adress", ConsoleColor.Blue);
+        EmailCheck:
+            ConsoleHelper.WriteWithColor("Enter student's email address", ConsoleColor.Blue);
             string email = Console.ReadLine();
             if (email.IsEmail() == false)
             {
@@ -69,10 +70,10 @@ namespace Presentation.Services
                 ConsoleHelper.WriteWithColor("Wrong email input format!\n", ConsoleColor.Red);
                 goto EmailCheck;
             }
-            if (email.Length == 0)
+            if (String.IsNullOrEmpty(email) == true)
             {
-                Console.Clear();
-                ConsoleHelper.WriteWithColor("Enter email adress please.", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Please enter email address", ConsoleColor.Yellow);
+                goto EmailCheck;
             }
 
         groupIdCheck: Console.Clear();
@@ -96,7 +97,7 @@ namespace Presentation.Services
             if (dbGroup.MaxSize <= dbGroup.Students.Count)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("This group is full\nChoose different group",ConsoleColor.Red);  
+                ConsoleHelper.WriteWithColor("This group is full\nChoose different group", ConsoleColor.Red);
                 goto groupIdCheck;
             }
 
@@ -111,7 +112,7 @@ namespace Presentation.Services
                 CreatedBy = adminstrator.Username
             };
 
-            dbGroup.Students.Add(student);          
+            dbGroup.Students.Add(student);
 
             Console.Clear();
             _studentRepos.Add(student);
@@ -217,7 +218,7 @@ namespace Presentation.Services
         IDCheck:
             foreach (var students in studentCount)
             {
-                ConsoleHelper.WriteWithColor($"\nId : {students.Id}\n Name : {students.Name}\n Surname : {students.Surname}\n Date of birth : {students.DOB.ToShortDateString()}\n Email : {students.Email}\n Created by : {students.CreatedBy}\n\n\n <<< PRESS ANY KEY TO CONTINUE >>>", ConsoleColor.Green);
+                ConsoleHelper.WriteWithColor($"\nId : {students.Id}\n Name : {students.Name}\n Surname : {students.Surname}\n Date of birth : {students.DOB.ToShortDateString()}\n Email : {students.Email}\n Created by : {students.CreatedBy}\n\n\n ", ConsoleColor.Yellow);
             }
 
             ConsoleHelper.WriteWithColor("Enter student ID that you want to remove or press 0 to go back to Menu", ConsoleColor.Blue);
@@ -242,9 +243,28 @@ namespace Presentation.Services
             }
             else
             {
-                _studentRepos.Delete(dbStudent);
-                ConsoleHelper.WriteWithColor($" {dbStudent.Name} Student profile successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
-                Console.ReadLine();
+            yesNoCheck:
+                ConsoleHelper.WriteWithColor("Are you sure you want to remove this student profile  y/n", ConsoleColor.Red);
+                ConsoleKeyInfo cki2 = Console.ReadKey();
+                if (cki2.Key == ConsoleKey.Y)
+                {
+                    Console.Clear();
+                    _studentRepos.Delete(dbStudent);
+                    ConsoleHelper.WriteWithColor($" {dbStudent.Name} {dbStudent.Surname} Student profile successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                    Console.ReadLine();
+                }
+                else if (cki2.Key == ConsoleKey.N)
+                {
+                    Console.Clear();
+                    goto IDCheck;
+                }
+                else
+                {
+                    Console.Clear();
+                    ConsoleHelper.WriteWithColor("Please select y/n", ConsoleColor.Red);
+                    goto yesNoCheck;
+                }
+
             }
         }
         public void GetAll()
@@ -257,7 +277,7 @@ namespace Presentation.Services
                 Console.ReadKey();
                 return;
             }
-            
+
             Console.Clear();
             foreach (var student in students)
             {
@@ -285,14 +305,14 @@ namespace Presentation.Services
                 Console.ReadKey();
                 return;
             }
-            IdCheck:
+        IdCheck:
             foreach (var group in groups)
             {
                 ConsoleHelper.WriteWithColor($" ID : {group.Id}\n Name : {group.Name}\n Group Size : {group.MaxSize}\n Start Date : {group.StartDate.ToShortDateString()}\n End Date : {group.EndDate.ToShortDateString()}", ConsoleColor.Yellow);
             }
             int id;
             bool isRightInput = int.TryParse(Console.ReadLine(), out id);
-            if(!isRightInput) 
+            if (!isRightInput)
             {
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("Wrong group id input\n Please selec from list");
@@ -313,7 +333,6 @@ namespace Presentation.Services
             }
             ConsoleHelper.WriteWithColor("Press any key to continue", ConsoleColor.Green);
             Console.ReadKey();
-
         }
     }
 }

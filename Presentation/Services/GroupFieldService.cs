@@ -25,14 +25,17 @@ namespace Presentation.Services
         NameCheck:
             ConsoleHelper.WriteWithColor("Enter group field name", ConsoleColor.Blue);
             string name = Console.ReadLine();
+            if (String.IsNullOrEmpty(name) == true)
+            {
+                ConsoleHelper.WriteWithColor("Please enter group field name", ConsoleColor.Yellow);
+                goto NameCheck;
+            }
             var Duplicate = _groupFieldRepos.GetByName(name);
             if (Duplicate != null)
             {
                 ConsoleHelper.WriteWithColor($"{name} already exists in database!\n Please assign new group field name", ConsoleColor.Red);
                 goto NameCheck;
             }
-
-
 
             var groupField = new GroupField
             {
@@ -84,7 +87,7 @@ namespace Presentation.Services
             }
             else
             {
-                NameCheck:
+            NameCheck:
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("Enter New Group Field name", ConsoleColor.Blue);
                 string name = Console.ReadLine();
@@ -97,7 +100,7 @@ namespace Presentation.Services
 
                 groupField.Name = name;
                 groupField.ModifiedBy = adminstrator.Username;
-               
+
                 _groupFieldRepos.Update(groupField);
                 Console.Clear();
                 ConsoleHelper.WriteWithColor($"{groupField.Name} Group field updated successfully\n Name : {groupField.Name}\n Created by : {groupField.CreatedBy}\n Created at : {groupField.CreatedAt}\n Modified by : {adminstrator.Username}\n Modified at : {groupField.ModifiedAt}\n\n\n <<< PRESS ANY KEY TO CONTINUE >>>", ConsoleColor.Green);
@@ -210,7 +213,5 @@ namespace Presentation.Services
                 Console.ReadLine();
             }
         }
-
-
     }
 }

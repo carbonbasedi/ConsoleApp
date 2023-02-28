@@ -27,9 +27,15 @@ namespace Data
                 new Adminstrator
                 {
                     Id = ++id,
-                    Username= "adminka",
+                    Username= "user",
                     Password= PasswordHasher.Encrypt("whatever"),
                     CreatedBy ="System"
+                },
+                new Adminstrator
+                {
+                    Id = ++id,
+                    Username = "Ruslan",
+                    Password = PasswordHasher.Encrypt("damnbro")
                 }
             };
             DbContext.Admins.AddRange(admins);

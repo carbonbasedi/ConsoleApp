@@ -18,26 +18,28 @@ namespace Presentation.Services
         private readonly GroupRepos _groupRepos;
         private readonly GroupFieldRepos _groupFieldRepos;
         private readonly PersonnelRepos _personnelRepos;
+        private readonly StudentRepos _studentRepos;
 
         public GroupService()
         {
             _groupRepos = new GroupRepos();
             _groupFieldRepos = new GroupFieldRepos();
             _personnelRepos = new PersonnelRepos();
+            _studentRepos = new StudentRepos();
         }
         public void Create(Adminstrator adminstrator)
         {
-            if (_personnelRepos.GetAll().Count== 0)
+            if (_personnelRepos.GetAll().Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no Teachers to assign new group to\nPlease first create Teacher\n Press any key to continue\n", ConsoleColor.Yellow);
+                ConsoleHelper.WriteWithColor("There is no Teachers to assign new group to\nPlease first create Teacher\n\nPress any key to continue\n", ConsoleColor.Yellow);
                 Console.ReadKey();
                 return;
             }
             if (_groupFieldRepos.GetAll().Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no Fields to assign new group to\nPlease first create Group Field\n Press any key to continue\n", ConsoleColor.Yellow);
+                ConsoleHelper.WriteWithColor("There is no Fields to assign new group to\nPlease first create Group Field\n\nPress any key to continue\n", ConsoleColor.Yellow);
                 Console.ReadKey();
                 return;
             }
@@ -45,10 +47,17 @@ namespace Presentation.Services
         NameCheck:
             ConsoleHelper.WriteWithColor("Enter group name", ConsoleColor.Blue);
             string name = Console.ReadLine();
+
+            if (String.IsNullOrEmpty(name) == true)
+            {
+                ConsoleHelper.WriteWithColor("Please enter group name", ConsoleColor.Yellow);
+                goto NameCheck;
+            }
+
             var Duplicate = _groupRepos.GetByName(name);
             if (Duplicate != null)
             {
-                ConsoleHelper.WriteWithColor($"{name} already exists in database!\n Please assign new name", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor($"{name} already exists in database!\nPlease assign new name", ConsoleColor.Red);
                 goto NameCheck;
             }
 
@@ -108,7 +117,7 @@ namespace Presentation.Services
                 goto EndDateCheck;
             }
 
-           groupFieldCheck: Console.Clear();
+        groupFieldCheck: Console.Clear();
             var groupFields = _groupFieldRepos.GetAll();
             foreach (var groupField in groupFields)
             {
@@ -124,7 +133,7 @@ namespace Presentation.Services
                 goto groupFieldCheck;
             }
             var dbGroupField = _groupFieldRepos.Get(num);
-            if(dbGroupField == null)
+            if (dbGroupField == null)
             {
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("Wrong Group Field Id\n please choose from list", ConsoleColor.Red);
@@ -144,11 +153,11 @@ namespace Presentation.Services
             if (!isRightInput)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("Wrong id input!\nChoose id from list",ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Wrong id input!\nChoose id from list", ConsoleColor.Red);
                 goto personnelCheck;
             }
             var dbPersonnel = _personnelRepos.Get(personnelId);
-            if(dbPersonnel is null)
+            if (dbPersonnel is null)
             {
                 ConsoleHelper.WriteWithColor("There is no personnel with this id", ConsoleColor.Red);
                 goto personnelCheck;
@@ -167,9 +176,9 @@ namespace Presentation.Services
 
             dbPersonnel.Groups.Add(group);
             dbGroupField.Groups.Add(group);
-        
+
             Console.Clear();
-            _groupRepos.Add(group);          
+            _groupRepos.Add(group);
             ConsoleHelper.WriteWithColor($" {group.Name} created successfully!\n Name : {group.Name}\n Max Capacity : {group.MaxSize}\n Start Date : {group.StartDate.ToShortDateString()}\n End Date : {group.EndDate.ToShortDateString()}\n Teacher : {group.Personnel.Name} {group.Personnel.Surname}\n Group Field : {group.GroupField.Name}\n\n\n <<< PRESS ANY KEY TO CONTINUE >>>", ConsoleColor.Green);
             Console.ReadKey();
         }
@@ -323,9 +332,27 @@ namespace Presentation.Services
             }
             else
             {
-                _groupRepos.Delete(dbGroup);
-                ConsoleHelper.WriteWithColor($" {dbGroup.Name} successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
-                Console.ReadLine();
+            yesNoCheck:
+                ConsoleHelper.WriteWithColor("Are you sure you want to remove this group y/n", ConsoleColor.Red);
+                ConsoleKeyInfo cki2 = Console.ReadKey();
+                if (cki2.Key == ConsoleKey.Y)
+                {
+                    Console.Clear();
+                    _groupRepos.Delete(dbGroup);
+                    ConsoleHelper.WriteWithColor($" {dbGroup.Name} successfully deleted!\n <<<PRESS ANY KEY TO CONTINUE>>>", ConsoleColor.Green);
+                    Console.ReadLine();
+                }
+                else if (cki2.Key == ConsoleKey.N)
+                {
+                    Console.Clear();
+                    goto IDCheck;
+                }
+                else
+                {
+                    Console.Clear();
+                    ConsoleHelper.WriteWithColor("Please select y/n", ConsoleColor.Red);
+                    goto yesNoCheck;
+                }
             }
         }
         public void GetAll()
@@ -415,7 +442,7 @@ namespace Presentation.Services
                 Console.Clear();
                 ConsoleHelper.WriteWithColor("There is no group with this name\n", ConsoleColor.Red);
                 goto NameCheck;
-            }           
+            }
             else
             {
                 Console.Clear();
@@ -425,7 +452,39 @@ namespace Presentation.Services
         }
         public void GetByStudentCount()
         {
+            Console.Clear();
+            var students = _studentRepos.GetAll();
+            if (students.Count == 0)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("There is no students to show groups by\nPlease first create students\nPress any key to continue\n", ConsoleColor.Red);
+                Console.ReadKey();
+                return;
+            }
+        countCheck:
+            ConsoleHelper.WriteWithColor("Enter minimum student count to", ConsoleColor.Red);
+            int count;
+            bool isRightInput = int.TryParse(Console.ReadLine(), out count);
+            if (!isRightInput)
+            {
+                Console.Clear();
+                ConsoleHelper.WriteWithColor("Wrong input format!\nPlease enter student count again\n", ConsoleColor.Red);
+                goto countCheck;
 
+            }
+            var groups = _groupRepos.GetGroupsByStudentCount(count);
+            if (groups.Count == 0)
+            {
+                ConsoleHelper.WriteWithColor("There is no groups with this many students\npress any key to continue", ConsoleColor.Red);
+                Console.ReadKey();
+                goto countCheck;
+            }
+            foreach (var group in groups)
+            {
+                ConsoleHelper.WriteWithColor($"Group Id : {group.Id}\nGroup Name : {group.Name}\nGroup Teacher : {group.Personnel.Name} {group.Personnel.Surname}\nGroup Field : {group.GroupField.Name}\n", ConsoleColor.Green);
+            }
+            ConsoleHelper.WriteWithColor("press any key to return to main menu", ConsoleColor.Yellow);
+            Console.ReadKey();
         }
         public void GetByGroupField()
         {
@@ -439,7 +498,7 @@ namespace Presentation.Services
                 return;
             }
 
-            var groups= _groupRepos.GetAll();
+            var groups = _groupRepos.GetAll();
             if (groups.Count == 0)
             {
                 Console.Clear();
@@ -483,12 +542,12 @@ namespace Presentation.Services
         }
         public void GetGroupsByTeacher()
         {
-            
+
             var personnels = _personnelRepos.GetAll();
-            if(personnels.Count == 0)
+            if (personnels.Count == 0)
             {
                 Console.Clear();
-                ConsoleHelper.WriteWithColor("There is no Groups to show in database\n Press any key to continue",ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("There is no Groups to show in database\n Press any key to continue", ConsoleColor.Red);
                 Console.ReadKey();
             }
         personnelIdCheck:
@@ -496,10 +555,10 @@ namespace Presentation.Services
             {
                 ConsoleHelper.WriteWithColor($"Id : {personnel.Id} \nFullname : {personnel.Name} {personnel.Surname}");
             }
-        
+
             ConsoleHelper.WriteWithColor("Enter Teacher Id", ConsoleColor.Blue);
             int id;
-            bool isRightInput = int.TryParse(Console.ReadLine(), out id);   
+            bool isRightInput = int.TryParse(Console.ReadLine(), out id);
             if (!isRightInput)
             {
                 Console.Clear();
@@ -516,8 +575,8 @@ namespace Presentation.Services
                 Console.ReadKey();
             }
             Console.Clear();
-            foreach(var group in dbPersonnel.Groups) 
-            {               
+            foreach (var group in dbPersonnel.Groups)
+            {
                 ConsoleHelper.WriteWithColor($"Id : {group.Id}\nName : {group.Name}\n", ConsoleColor.Green);
             }
             ConsoleHelper.WriteWithColor("Press any key to continue", ConsoleColor.Green);

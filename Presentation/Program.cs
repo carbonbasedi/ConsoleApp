@@ -42,7 +42,7 @@ namespace Presentation
                 ConsoleHelper.WriteWithColor("[4] - Group Fields", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[5] - Log Out", ConsoleColor.Blue);
                 ConsoleHelper.WriteWithColor("[0] - Terminate Session", ConsoleColor.Blue);
-
+            
                 int menu;
                 bool isRightInput = int.TryParse(Console.ReadLine(), out menu);
                 if (!isRightInput)

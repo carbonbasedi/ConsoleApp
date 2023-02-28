@@ -9,7 +9,8 @@ namespace Data.Repos.Abstract
 {
     public interface IGroupRepos : IRepos<Group>
     {
-        Group GetByName(string name);
+        List<Group> GetAllByGroupField(int id);
         List<Group> GetGroupsByStudentCount(int studentCount);
+        Group GetByName(string name);
     }
 }

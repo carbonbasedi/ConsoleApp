@@ -52,7 +52,7 @@ namespace Presentation.Services
                 {
                     ConsoleHelper.WriteWithColor("Too many wrong inputs\nWait 10 seconds then try again\n", ConsoleColor.Red);
                     Console.Write(a);
-                    System.Threading.Thread.Sleep(1000);
+                    Thread.Sleep(1000);
                     Console.Clear();
                 }
                 tries = 0;

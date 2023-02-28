@@ -43,6 +43,5 @@ namespace Data.Repos.Concrete
         {
             DbContext.Personnels.Remove(personnel);
         }
-
     }
 }
